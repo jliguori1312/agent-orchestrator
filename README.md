@@ -50,9 +50,11 @@ and `scripts/agent/verify.sh`. The first target repo is
 
 ## Status
 
-Milestones are mapped in [the build plan](docs/agent-orchestrator-plan.md):
+Milestones are mapped in [the build plan](docs/agent-orchestrator-plan.md) and
+tracked in [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/1):
 
-- **M0 — Substrate + host:** LXC provisioned, GitHub App created. *(in progress)*
+- **M0 — Substrate + host:** provision the LXC; create + install the GitHub App.
+  *(human-only; not started)*
 - **M1 — Read-only triage + plan gate:** config loader, GitHub adapter, run
   registry, journal, triage/plan prompts.
 - **M2 — Plan-gated PRs (Tiers 0–3):** worktree manager, implement session,
@@ -68,7 +70,7 @@ Milestones are mapped in [the build plan](docs/agent-orchestrator-plan.md):
 
 ## Quick start
 
-M1 scaffold (code) is in progress. Until then:
+The code scaffold lands in M1. Until then:
 
 ```bash
 pnpm install      # once the M1 dependencies land
@@ -97,6 +99,7 @@ private key, model keys) live only on the host — never in this repo.
 
 ## Documentation
 
+- [Build tracker (issue #1)](https://github.com/jliguori1312/agent-orchestrator/issues/1)
 - [Build plan](docs/agent-orchestrator-plan.md)
 - [Pipeline framework](docs/agent-assisted-development-pipeline.md)
 - [Config reference](docs/config-reference.md)
