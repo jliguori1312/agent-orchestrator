@@ -228,5 +228,5 @@ Still open:
   and its ADRs.
 - [x] Decide D1–D4/D6 before M0 provisioning (ADR-0002); D3/D5 before M1/M3
   (D3 resolved in ADR-0002; D5 still open, due before M3).
-- Provision the LXC and create the GitHub App (M0).
+- [x] Provision the LXC and create the GitHub App (M0).
 - Scaffold this repository (M1) — in progress.
