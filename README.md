@@ -29,8 +29,8 @@ GitHub Issue (label: agent-ready, collaborator only)
 ```
 
 - **State store:** GitHub Issues + labels + a run-marker comment. No database.
-- **Scheduler:** a `systemd` timer (~5 min tick, single slot) on an unprivileged
-  LXC.
+- **Scheduler:** a hardened `systemd` system unit + timer (~5 min tick, single
+  slot) on an unprivileged LXC.
 - **Identity:** a dedicated GitHub App (never a PAT or user token), so agent
   commits/PRs carry bot attribution and cannot inherit a ruleset bypass.
 - **Verification:** each target repo's `scripts/agent/verify.sh` is the single
@@ -93,8 +93,8 @@ private key, model keys) live only on the host — never in this repo.
 
 - Dedicated GitHub App with least-privilege installation tokens; **no ruleset
   bypass grant** (ADR-0003).
-- Isolation via an unprivileged LXC + git worktrees + env scrubbing + an egress
-  allowlist (ADR-0002 D1).
+- Isolation via an unprivileged LXC + git worktrees + env scrubbing +
+  public-internet-only egress (private/link-local/host blocked) (ADR-0002 D1).
 - No production/deploy secrets in the orchestrator environment.
 
 ## Documentation

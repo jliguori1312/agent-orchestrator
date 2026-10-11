@@ -39,6 +39,7 @@ migrated docs. Work is tracked in
 | `src/prompts/` | Triage, plan, implement, review system prompts |
 | `test/` | Unit tests with mocked `gh` / `pi` / `git` / filesystem |
 | `docs/` | Build plan, framework, config reference, ADRs |
+| `deploy/systemd/` | Host systemd unit + timer templates (ADR-0004) |
 | `orchestrator.example.jsonc` | Host-config template (copy to gitignored `orchestrator.jsonc`) |
 
 ## Boundaries

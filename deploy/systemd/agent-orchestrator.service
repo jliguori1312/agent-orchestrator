@@ -1,0 +1,48 @@
+# agent-orchestrator.service — systemd *system* unit.
+#
+# Installed to /etc/systemd/system/ and owned by root. See ADR-0004: the
+# scheduler runs under PID 1 as a dedicated unprivileged user — no user units,
+#
+# Template only. Copy to /etc/systemd/system/ and `systemctl daemon-reload`.
+
+[Unit]
+Description=agent-orchestrator tick (agent-assisted development pipeline)
+Documentation=https://github.com/jliguori1312/agent-orchestrator
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=agent-orchestrator
+Group=agent-orchestrator
+WorkingDirectory=/opt/agent-orchestrator
+EnvironmentFile=/etc/agent-orchestrator/environment
+# Placeholder entrypoint until M1 lands; point at the real CLI entry then.
+ExecStart=/usr/bin/node /opt/agent-orchestrator/dist/main.js
+TimeoutStartSec=30min
+
+# Don't starve interactive use on a 2-core host.
+Nice=10
+IOSchedulingClass=idle
+
+# Cap memory so a runaway verify.sh (tsc/test) can't OOM the whole LXC.
+MemoryMax=6G
+
+# Hardening (ADR-0004). Deliberately moderate: verify.sh spawns the target
+# repo's whole toolchain, so we avoid the directives most likely to break it.
+# Notably omitted: MemoryDenyWriteExecute (kills V8's JIT), RestrictNamespaces
+# (breaks browser/test sandboxes), RestrictAddressFamilies and SystemCallFilter
+# (unpredictable against arbitrary repo tooling). Tighten once M1 shows what
+# verify.sh actually needs.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/var/lib/agent-orchestrator
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+CapabilityBoundingSet=
+UMask=0027

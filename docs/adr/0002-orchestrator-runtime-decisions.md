@@ -6,6 +6,7 @@
 - **Status:** Accepted
 - **Date:** 2026-10-10
 - **Deciders:** Repository owner
+- **Amended by:** [ADR-0004](./0004-run-orchestrator-as-hardened-system-unit.md) (the LXC runs a hardened *system* unit; user units + linger are not used)
 - **Extends:** [ADR-0001](./0001-build-thin-orchestrator-on-pi.md) (build the thin orchestrator)
 - **See also:** [pottery-studio-system issue #518](https://github.com/jliguori1312/pottery-studio-system/issues/518)
   (first target repo's policy), [the orchestrator build plan](../agent-orchestrator-plan.md) (§9 open decisions)
@@ -22,11 +23,14 @@ M1 (skeleton) requires them resolved. This record closes five of them. D5
 The orchestrator's runtime configuration, as resolved from the build plan's
 open decisions:
 
-- **D1 — Isolation host: unprivileged LXC** on the Proxmox host (systemd +
-  linger), not a small VM + Docker. The LXC is the security boundary (SEC4);
-  we escalate to a VM only if the threat model tightens.
+- **D1 — Isolation host: unprivileged LXC** on the Proxmox host, not a small
+  VM + Docker. The LXC is the security boundary (SEC4); we escalate to a VM
+  only if the threat model tightens. *(Process-manager detail amended by
+  [ADR-0004](./0004-run-orchestrator-as-hardened-system-unit.md): a hardened
+  system unit, not user units + linger.)*
 - **D2 — Scheduler: systemd timer**, ~5 min tick, single slot. Not a
   long-lived service with webhooks — no daemon state, restart-resilient.
+  *(Delivered as a system unit — [ADR-0004](./0004-run-orchestrator-as-hardened-system-unit.md).)*
 - **D3 — Plan gate: always-on** for all agent-eligible tiers (0–3). Every
   run posts a plan and waits for `/approve-plan` before implementation.
   Revisit (possibly tier-dependent) only after M2 metrics exist.
