@@ -7,6 +7,13 @@
     "base": "main"               // branch worktrees freeze from
   },
 
+  "github_app": {
+    "app_id": "123456",          // numeric GitHub App ID (public, not secret)
+    "installation_id": "789012"  // installation ID for the target repo (public, not secret)
+    // The App private key is NOT here — on the host it is a systemd credential
+    // (LoadCredential=, ADR-0004); see docs/config-reference.md.
+  },
+
   "workspace": {
     "root": "/var/lib/agent-orchestrator"   // repos cloned + worktrees created here
   },

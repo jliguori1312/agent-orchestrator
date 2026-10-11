@@ -1,16 +1,17 @@
 # Configuration reference
 
-The orchestrator reads two kinds of config, split by ownership:
+The orchestrator reads config in three places, split by ownership and
+sensitivity:
 
-- **Host config** — `orchestrator.jsonc` (this repo's runtime, gitignored). Holds
-  where to run, which repos to target, which models to use, and where the
-  workspace lives.
+- **Host config** — `orchestrator.jsonc` (this repo's runtime, gitignored).
+  Holds the non-secret settings: which repos to target, GitHub App identifiers,
+  which models to use, and where the workspace lives.
 - **Target-repo policy** — `.github/agent.yml` inside each target repo. Holds
   that repo's tier eligibility, diff budget, protected-path globs, and review
   settings. It lives with the repo it governs, not here.
-
-Secrets (the GitHub App private key, model-provider keys) come from the
-environment, never from `orchestrator.jsonc`.
+- **Secrets** — the GitHub App private key, the model-provider key, and the
+  read-only Cloudflare token. These never live in `orchestrator.jsonc`; on the
+  host they are systemd credentials loaded via `LoadCredential=` (see below).
 
 ## `orchestrator.jsonc` (host, gitignored)
 
@@ -22,6 +23,11 @@ template.
   "target": {
     "repo": "owner/repo",     // first target repository
     "base": "main"            // branch worktrees freeze from
+  },
+
+  "github_app": {
+    "app_id": "123456",       // numeric GitHub App ID (public, not secret)
+    "installation_id": "789012"  // installation ID for the target repo
   },
 
   "workspace": {
@@ -51,20 +57,25 @@ template.
 }
 ```
 
-## `.env` (host, gitignored)
+## Secrets (host, systemd credentials)
 
-See [`.env.example`](../.env.example). Variables:
+Secrets are **files** under `/etc/agent-orchestrator/`, not environment
+variables. The systemd unit loads them with `LoadCredential=` (ADR-0004), so
+they never enter the process environment and are not inherited by child shells.
+On disk they are `root:root` mode `0600`; systemd reads them as root and
+materializes each into the service's private `$CREDENTIALS_DIRECTORY`:
 
-| Variable | Purpose |
-|---|---|
-| `GH_APP_ID` | GitHub App numeric ID |
-| `GH_APP_PRIVATE_KEY_PATH` | Path to the App's private key (LXC only, never committed) |
-| `GH_APP_INSTALLATION_ID` | Installation ID for the target account/repo |
-| `MODEL_PROVIDER` | Model provider identifier |
-| `IMPLEMENT_MODEL` | Model for triage/plan/implement roles |
-| `REVIEW_MODEL` | Model for the adversarial review role (different from implement) |
-| `WORKSPACE_ROOT` | Where target repos are cloned and worktrees created |
-| `VERIFY_COMMAND` | Command run inside each target worktree |
+| Credential | Source file | Consumed by |
+|---|---|---|
+| `app-key` | `/etc/agent-orchestrator/app.pem` | C2 — signs the GitHub App JWT |
+| `anthropic-key` | `/etc/agent-orchestrator/anthropic.key` | C5 — the model provider |
+| `cloudflare-token` | `/etc/agent-orchestrator/cloudflare.token` | `verify.sh` (read-only; `types:fresh`) |
+
+The code reads them from `$CREDENTIALS_DIRECTORY/<name>`.
+
+[`.env.example`](../.env.example) is a **dev-only** convenience for running the
+orchestrator manually (outside systemd) during M1. It is not the host
+mechanism.
 
 ## `.github/agent.yml` (target-repo policy)
 
