@@ -54,7 +54,7 @@ Milestones are mapped in [the build plan](docs/agent-orchestrator-plan.md) and
 tracked in [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/1):
 
 - **M0 — Substrate + host:** provision the LXC; create + install the GitHub App.
-  *(human-only; not started)*
+  *(done)*
 - **M1 — Read-only triage + plan gate:** config loader, GitHub adapter, run
   registry, journal, triage/plan prompts.
 - **M2 — Plan-gated PRs (Tiers 0–3):** worktree manager, implement session,
