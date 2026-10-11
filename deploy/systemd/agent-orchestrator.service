@@ -2,7 +2,7 @@
 #
 # Installed to /etc/systemd/system/ and owned by root. See ADR-0004: the
 # scheduler runs under PID 1 as a dedicated unprivileged user — no user units,
-#
+# no `loginctl enable-linger`.
 # Template only. Copy to /etc/systemd/system/ and `systemctl daemon-reload`.
 
 [Unit]
@@ -16,7 +16,13 @@ Type=oneshot
 User=agent-orchestrator
 Group=agent-orchestrator
 WorkingDirectory=/opt/agent-orchestrator
-EnvironmentFile=/etc/agent-orchestrator/environment
+# Secrets are systemd credentials, not environment variables (ADR-0004): the
+# code reads them from $CREDENTIALS_DIRECTORY/<name>, and child shells (e.g. the
+# agent's bash, verify.sh) do not inherit them. Non-secret config lives in
+# /opt/agent-orchestrator/orchestrator.jsonc.
+LoadCredential=app-key:/etc/agent-orchestrator/app.pem
+LoadCredential=anthropic-key:/etc/agent-orchestrator/anthropic.key
+LoadCredential=cloudflare-token:/etc/agent-orchestrator/cloudflare.token
 # Placeholder entrypoint until M1 lands; point at the real CLI entry then.
 ExecStart=/usr/bin/node /opt/agent-orchestrator/dist/main.js
 TimeoutStartSec=30min

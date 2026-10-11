@@ -151,7 +151,10 @@ decision.
   system-unit templates from `deploy/systemd/`
   ([ADR-0004](./adr/0004-run-orchestrator-as-hardened-system-unit.md)).
 - Create the GitHub App and install it on the first target repo only
-  (ADR-0003); keep its private key in the LXC.
+  (ADR-0003); store its private key in the LXC
+  (`/etc/agent-orchestrator/app.pem`). Defer the full secret mechanism (systemd
+  `LoadCredential=` files for the model key and read-only Cloudflare token) to
+  M1, when C1/C2/C5 define what the code reads.
 - Exit: `verify.sh` green inside the host; branch protection requires review.
 
 ### M1 — Read-only triage + plan gate (Phase 1)
@@ -203,6 +206,11 @@ Still open:
 
 - **D5 — Models:** implement model vs review model (different provider models
   reduce correlated blind spots). Decide before M3.
+- **D7 — Agent session user:** run the Pi agent session as a separate,
+  lower-privilege user than the secret-holding orchestrator process (both are
+  currently `agent-orchestrator`, so the agent's `bash` could read the App key
+  via `$CREDENTIALS_DIRECTORY`). Decide before M2, when the implement session
+  gains `bash`.
 
 ## 10. Risks and mitigations
 

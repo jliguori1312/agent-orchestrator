@@ -74,19 +74,22 @@ The code scaffold lands in M1. Until then:
 
 ```bash
 pnpm install      # once the M1 dependencies land
-cp .env.example .env
 cp orchestrator.example.jsonc orchestrator.jsonc
-# edit .env and orchestrator.jsonc
+# edit orchestrator.jsonc; secrets are systemd credentials on the host
 ```
 
-The real `orchestrator.jsonc` and `.env` are gitignored; secrets (the GitHub App
-private key, model keys) live only on the host — never in this repo.
+The real `orchestrator.jsonc` is gitignored; secrets (the GitHub App private
+key, model key, read-only Cloudflare token) live only on the host as systemd
+`LoadCredential=` files — never in this repo. `.env.example` is a dev-only
+convenience.
 
 ## Configuration
 
 - Host config: [orchestrator.example.jsonc](orchestrator.example.jsonc) →
   `orchestrator.jsonc`.
-- Environment: [.env.example](.env.example).
+- Secrets: systemd `LoadCredential=` on the host — see
+  [config reference](docs/config-reference.md).
+- Dev-only env: [.env.example](.env.example).
 - Full reference: [docs/config-reference.md](docs/config-reference.md).
 
 ## Security model
