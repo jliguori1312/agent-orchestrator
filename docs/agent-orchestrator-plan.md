@@ -107,7 +107,7 @@ may. Every run-scoped comment carries `<!-- agent:run=<run_id> -->`.
 
 ## 7. Config (host + repo)
 
-- **Host** (`orchestrator.toml`): repo, base branch, workspace root, Pi
+- **Host** (`orchestrator.jsonc`): repo, base branch, workspace root, Pi
   provider/model (and review-model override), verify command, slot count,
   notification channel, egress assumptions, protected-paths path.
 - **Repo** (`.github/agent.yml`): tier eligibility, diff budget, protected

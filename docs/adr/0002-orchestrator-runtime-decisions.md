@@ -41,7 +41,7 @@ open decisions:
   other projects. We deliberately do **not** invest in cross-project
   reusability now — but the design must not hinder it later: no
   target-repo specifics hardcoded in orchestrator code, host config
-  (`orchestrator.toml`, in the orchestrator repo) carries the target-repo
+  (`orchestrator.jsonc`, in the orchestrator repo) carries the target-repo
   list, and each target repo keeps its own policy (`.github/agent.yml`).
 
 ## Consequences

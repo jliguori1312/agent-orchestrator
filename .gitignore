@@ -16,7 +16,7 @@
 *.key
 
 # host config (may contain provider/model/paths); template is committed
-orchestrator.toml
+orchestrator.jsonc
 
 # orchestrator runtime
 /.pi-session/
