@@ -92,7 +92,8 @@ Each target repo's `.github/agent.yml` declares which tiers are agent-eligible
 - **SEC3 — Least-privilege tokens.** Agent jobs hold no production secrets.
   Deploy credentials stay in separate, human-triggered workflows.
 - **SEC4 — Sandbox isolation.** Run the agent in a container/micro-VM with
-  minimal mounts; restrict network egress. Never run the agent with host
+  minimal mounts; restrict egress to the public internet (block private,
+  link-local/metadata, and the host). Never run the agent with host
   credentials.
 - **SEC5 — Pin actions by SHA.** All third-party GitHub Actions pinned to
   commit SHAs.

@@ -40,7 +40,7 @@ is not a coding agent and not a build system.
 
 ```
 Proxmox host
-└─ unprivileged LXC (systemd + linger)  [ADR-0002 D1]
+└─ unprivileged LXC (systemd)  [ADR-0002 D1, ADR-0004]
    └─ agent-orchestrator (own repo [ADR-0002 D6]; Node 24, systemd timer, ~5 min tick)
       ├─ gh CLI          → Issues / labels / PRs / CI status / branch protection
       │                    driven by GitHub App installation tokens [ADR-0003]
@@ -49,14 +49,39 @@ Proxmox host
       └─ pi --print …    → triage / plan / implement / review sessions
                            (session JSONL retained under <worktree>/.pi-session/)
 
-Egress allowlist: api.github.com, github.com, codeload.github.com,
-                  model provider (or local Ollama), package registries.
+Egress: restricted — public internet only (TCP 80/443 + DNS to the local
+        resolver); inbound DROP; RFC1918, link-local/metadata (169.254.0.0/16),
+        multicast, and the Proxmox host/gateway blocked. Web search, arbitrary
+        docs, and other repos stay reachable — see "Egress policy" below.
 Identity: dedicated GitHub App [ADR-0003] — least-privilege installation
           tokens, no ruleset bypass, bot attribution on every write.
           No PAT, no user-account token (it would inherit the owner's
           repo-admin ruleset bypass).
 Pi creds: per-deployment agent dir, isolated from any other deployment.
 ```
+
+### Egress policy
+
+The agent reads public sources (web search, docs, upstream repos) during
+triage/plan/implement/review, so a hostname allowlist is not workable — the
+research surface is unbounded. The property we need is not "block the
+internet" but "block *inward* reach": the agent may read the public web but
+must not touch the host, LAN, or private/metadata endpoints. Egress is
+therefore restricted by direction and destination class:
+
+| Direction | Policy |
+|---|---|
+| Inbound | DROP all (nothing needs to reach the agent) |
+| Outbound | ACCEPT public internet on TCP 80/443; ACCEPT DNS to the configured resolver |
+| Outbound | DROP RFC1918 (`10/8`, `172.16/12`, `192.168/16`), loopback, link-local (`169.254/16`, incl. cloud metadata), multicast, and the Proxmox host/gateway |
+| Everything else | DROP |
+
+Accepted residual risk: with public 443 open, a compromised prompt could
+exfiltrate the App private key over HTTPS. This is bounded by SEC3 (no
+production/deploy secrets in the container), ADR-0003 (least-privilege App, no
+merge/admin/ruleset bypass), G3/G5 (human review before merge), and the LXC's
+single-purpose disposability. Closing it fully would require an egress proxy
+choke point (`HTTPS_PROXY`) with outbound DLP — deferred as hardening.
 
 ## 4. Decisions already made
 
@@ -66,8 +91,8 @@ Pi creds: per-deployment agent dir, isolated from any other deployment.
 | Agent interface | Pi **CLI** (`--print --session-dir --tools --system-prompt`), behind an adapter | Most stable Pi contract; Orbi proved it works; SDK/RPC can swap in later |
 | GitHub interface | `gh` CLI driven by GitHub App installation tokens | Least privilege, no ruleset bypass, bot attribution (ADR-0003) |
 | Repo placement | Separate `agent-orchestrator` repo; target-repo policy stays in each target repo | Not tied to any target repo; reusable later without extra work (ADR-0002 D6) |
-| Isolation | Dedicated LXC/VM + git worktree + env scrubbing + egress allowlist | SEC4; the host is the boundary |
-| Scheduling | systemd timer (~5 min tick), single slot | Simple, restart-resilient; no daemon state |
+| Isolation | Dedicated LXC/VM + git worktree + env scrubbing + public-internet-only egress (private/link-local/host blocked) | SEC4; the host is the boundary |
+| Scheduling | Hardened systemd **system** unit + timer (~5 min tick), single slot | Simple, restart-resilient; no daemon state; unit not writable by the agent's user (ADR-0004) |
 | State store | GitHub labels + a run marker comment; JSONL journal on disk | No database (matches the framework and Orbi's best idea) |
 | Verification | `scripts/agent/verify.sh` in the worktree | Single source of truth for "green" |
 | Merge | Human-only | The framework's non-goal; the deliberate inversion of Orbi |
@@ -109,7 +134,7 @@ may. Every run-scoped comment carries `<!-- agent:run=<run_id> -->`.
 
 - **Host** (`orchestrator.jsonc`): repo, base branch, workspace root, Pi
   provider/model (and review-model override), verify command, slot count,
-  notification channel, egress assumptions, protected-paths path.
+  notification channel, egress policy (public-only; §3), protected-paths path.
 - **Repo** (`.github/agent.yml`): tier eligibility, diff budget, protected
   globs, plan-gate on/off, review model, labels.
 
@@ -122,7 +147,9 @@ decision.
 
 - Confirm CI, `verify.sh`, `protected-paths.txt`, branch protection, previews.
 - Provision the unprivileged LXC (ADR-0002 D1); install Node 24, pnpm, `gh`,
-  Pi; lock egress.
+  Pi; restrict egress to the public internet (§3 "Egress policy"). Install the
+  system-unit templates from `deploy/systemd/`
+  ([ADR-0004](./adr/0004-run-orchestrator-as-hardened-system-unit.md)).
 - Create the GitHub App and install it on the first target repo only
   (ADR-0003); keep its private key in the LXC.
 - Exit: `verify.sh` green inside the host; branch protection requires review.
@@ -158,7 +185,8 @@ Resolved 2026-10-10 in [ADR-0002](./adr/0002-orchestrator-runtime-decisions.md)
 and [ADR-0003](./adr/0003-orchestrator-authenticates-as-github-app.md):
 
 - **D1 — Isolation host:** unprivileged LXC (ADR-0002).
-- **D2 — Scheduler:** systemd timer, ~5 min tick, single slot (ADR-0002).
+- **D2 — Scheduler:** systemd timer, ~5 min tick, single slot (ADR-0002;
+  system-unit detail in [ADR-0004](./adr/0004-run-orchestrator-as-hardened-system-unit.md)).
 - **D3 — Plan gate:** always-on for Tiers 0–3; revisit after M2 metrics
   (ADR-0002).
 - **D4 — Protected-path enforcement:** orchestrator-side diff check as the
@@ -183,7 +211,7 @@ Still open:
 | Orchestration bugs (new code) | Unit tests with mocked `gh`/`pi`/`git`; small components; Orbi's tests as a bug catalog |
 | `bash` bypasses protected paths | Orchestrator diff check + optional Pi tool-layer hook; dedicated LXC/VM boundary |
 | Credential exposure | Dedicated GitHub App (least privilege, no ruleset bypass — ADR-0003); per-deployment Pi agent dir; env scrubbing; no deploy secrets |
-| Sandbox escape / egress | Unprivileged LXC or VM; network allowlist; no host mounts |
+| Sandbox escape / egress | Unprivileged LXC or VM; public-internet-only egress (private/link-local/host blocked); no host mounts |
 | Scope creep | §2 non-goals; milestones gated by human exits |
 
 ## 11. Follow-ups

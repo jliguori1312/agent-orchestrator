@@ -114,7 +114,8 @@ need.
 
 - Execute the [orchestrator build plan](../agent-orchestrator-plan.md)
   (milestones M0–M3).
-- Provision the dedicated runtime host (unprivileged LXC with systemd +
-  linger, or a small VM for a Docker boundary).
+- Provision the dedicated runtime host (unprivileged LXC with systemd, or a
+  small VM for a Docker boundary). *The process manager is a hardened system
+  unit — [ADR-0004](./0004-run-orchestrator-as-hardened-system-unit.md).*
 - Point each target repo's policy doc and `AGENTS.md` "Agent pipeline" section
   at this ADR and the build plan.
