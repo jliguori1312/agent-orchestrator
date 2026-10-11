@@ -1,0 +1,32 @@
+# dependencies
+/node_modules
+
+# build
+/dist
+/build
+*.tsbuildinfo
+
+# local env — templates only are committed
+.env
+.env.*
+!.env.example
+
+# secrets
+*.pem
+*.key
+
+# host config (may contain provider/model/paths); template is committed
+orchestrator.toml
+
+# orchestrator runtime
+/.pi-session/
+/worktrees/
+/runs/
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# editor / OS
+.DS_Store

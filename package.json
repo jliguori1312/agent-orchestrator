@@ -1,0 +1,16 @@
+{
+  "name": "agent-orchestrator",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Self-hosted, human-merged agent orchestrator (Pi + gh + git worktrees).",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "license": "MIT"
+}
