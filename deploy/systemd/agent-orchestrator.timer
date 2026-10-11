@@ -1,0 +1,18 @@
+# agent-orchestrator.timer — systemd *system* timer.
+#
+# Installed to /etc/systemd/system/ and owned by root (ADR-0004). Single slot:
+# a Type=oneshot service cannot run two instances, so a tick that overruns the
+# 5-minute interval is simply skipped rather than overlapped.
+
+[Unit]
+Description=agent-orchestrator 5-minute tick
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+RandomizedDelaySec=30s
+AccuracySec=30s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
