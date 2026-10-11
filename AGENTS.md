@@ -20,7 +20,7 @@ the build plan is [docs/agent-orchestrator-plan.md](docs/agent-orchestrator-plan
 | `src/prompts/` | Triage, plan, implement, review system prompts |
 | `test/` | Unit tests with mocked `gh` / `pi` / `git` / filesystem |
 | `docs/` | Build plan, framework, config reference, ADRs |
-| `orchestrator.example.toml` | Host-config template (copy to gitignored `orchestrator.toml`) |
+| `orchestrator.example.jsonc` | Host-config template (copy to gitignored `orchestrator.jsonc`) |
 
 ## Boundaries
 
@@ -55,8 +55,8 @@ pnpm test        # vitest
 ## Security
 
 - Never commit the GitHub App private key, `.env`, or the real
-  `orchestrator.toml`. Templates live in `.env.example` and
-  `orchestrator.example.toml` with placeholders only.
+  `orchestrator.jsonc`. Templates live in `.env.example` and
+  `orchestrator.example.jsonc` with placeholders only.
 - A secret scan runs in CI. If you must reference a credential in a test, use a
   clearly-fake placeholder.
 

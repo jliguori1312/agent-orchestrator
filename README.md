@@ -73,17 +73,17 @@ M1 scaffold (code) is in progress. Until then:
 ```bash
 pnpm install      # once the M1 dependencies land
 cp .env.example .env
-cp orchestrator.example.toml orchestrator.toml
-# edit .env and orchestrator.toml
+cp orchestrator.example.jsonc orchestrator.jsonc
+# edit .env and orchestrator.jsonc
 ```
 
-The real `orchestrator.toml` and `.env` are gitignored; secrets (the GitHub App
+The real `orchestrator.jsonc` and `.env` are gitignored; secrets (the GitHub App
 private key, model keys) live only on the host — never in this repo.
 
 ## Configuration
 
-- Host config: [orchestrator.example.toml](orchestrator.example.toml) →
-  `orchestrator.toml`.
+- Host config: [orchestrator.example.jsonc](orchestrator.example.jsonc) →
+  `orchestrator.jsonc`.
 - Environment: [.env.example](.env.example).
 - Full reference: [docs/config-reference.md](docs/config-reference.md).
 

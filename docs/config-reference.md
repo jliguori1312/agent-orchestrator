@@ -2,7 +2,7 @@
 
 The orchestrator reads two kinds of config, split by ownership:
 
-- **Host config** — `orchestrator.toml` (this repo's runtime, gitignored). Holds
+- **Host config** — `orchestrator.jsonc` (this repo's runtime, gitignored). Holds
   where to run, which repos to target, which models to use, and where the
   workspace lives.
 - **Target-repo policy** — `.github/agent.yml` inside each target repo. Holds
@@ -10,37 +10,45 @@ The orchestrator reads two kinds of config, split by ownership:
   settings. It lives with the repo it governs, not here.
 
 Secrets (the GitHub App private key, model-provider keys) come from the
-environment, never from `orchestrator.toml`.
+environment, never from `orchestrator.jsonc`.
 
-## `orchestrator.toml` (host, gitignored)
+## `orchestrator.jsonc` (host, gitignored)
 
-See [`orchestrator.example.toml`](../orchestrator.example.toml) for a copy-paste
+See [`orchestrator.example.jsonc`](../orchestrator.example.jsonc) for a copy-paste
 template.
 
-```toml
-[target]
-repo = "owner/repo"     # first target repository
-base = "main"           # branch worktrees freeze from
+```jsonc
+{
+  "target": {
+    "repo": "owner/repo",     // first target repository
+    "base": "main"            // branch worktrees freeze from
+  },
 
-[workspace]
-root = "/var/lib/agent-orchestrator"   # repos cloned + worktrees created here
+  "workspace": {
+    "root": "/var/lib/agent-orchestrator"   // repos cloned + worktrees created here
+  },
 
-[model]
-provider = "anthropic"  # or a local provider (e.g. ollama)
-implement = "claude-..." # model for triage/plan/implement roles
-review = "..."           # different model for adversarial review (D5)
+  "model": {
+    "provider": "anthropic",  // or a local provider (e.g. ollama)
+    "implement": "claude-...", // model for triage/plan/implement roles
+    "review": "..."            // different model for adversarial review (D5)
+  },
 
-[verify]
-command = "./scripts/agent/verify.sh"  # run inside each target worktree
+  "verify": {
+    "command": "./scripts/agent/verify.sh"  // run inside each target worktree
+  },
 
-[guardrails]
-protected_paths = "scripts/agent/protected-paths.txt"  # path inside the target repo
-diff_budget_lines = 300
-diff_budget_files = 10
+  "guardrails": {
+    "protected_paths": "scripts/agent/protected-paths.txt",  // path inside the target repo
+    "diff_budget_lines": 300,
+    "diff_budget_files": 10
+  },
 
-[notify]
-# No separate channel. `needs-human` rides the GitHub App's @mentions
-# through GitHub's native mobile/email delivery (ADR-0003).
+  "notify": {
+    // No separate channel. `needs-human` rides the GitHub App's @mentions
+    // through GitHub's native mobile/email delivery (ADR-0003).
+  }
+}
 ```
 
 ## `.env` (host, gitignored)
