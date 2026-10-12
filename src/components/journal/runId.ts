@@ -5,7 +5,12 @@
 // human correlates runs by eye, without parsing anything.
 import { randomBytes } from 'node:crypto'
 
-export const RUN_ID_PATTERN = /^\d{6}T\d{6}Z-[0-9a-f]{4}$/
+// One run id's charset: timestamp + hex suffix. Exported as a source fragment
+// so the comment-marker regex (registry/runMarker.ts) embeds exactly the same
+// shape instead of restating it — the two must never drift.
+export const RUN_ID_BODY_SOURCE = '\\d{6}T\\d{6}Z-[0-9a-f]{4}'
+
+export const RUN_ID_PATTERN = new RegExp(`^${RUN_ID_BODY_SOURCE}$`)
 
 export function generateRunId(now: () => Date = () => new Date()): string {
   // All fields read in UTC — a run started at a host's local midnight and one

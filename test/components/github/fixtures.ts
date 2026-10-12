@@ -28,3 +28,51 @@ export const validTokenResponse = {
 export function decodeJwtSegment(segment: string): unknown {
   return JSON.parse(Buffer.from(segment, 'base64url').toString('utf8'))
 }
+
+// --- REST payload fixtures for the `gh` adapter tests ---
+
+// An open issue carrying the trigger label, as REST /issues returns it.
+export const issuePayload = {
+  number: 42,
+  title: 'Fix the widget',
+  state: 'open',
+  labels: [{ name: 'agent-ready' }],
+  user: { login: 'octocat' },
+}
+
+// The same shape from /issues but for a pull request: the endpoint returns
+// both, and the adapter must drop these.
+export const pullRequestPayload = {
+  number: 43,
+  title: 'A pull request that looks like an issue',
+  state: 'open',
+  labels: [{ name: 'agent-ready' }],
+  user: { login: 'octocat' },
+  pull_request: { url: 'https://api.github.com/repos/octo/widgets/pulls/43' },
+}
+
+// A run-marker comment as REST /issues/{n}/comments returns it.
+export const commentPayload = {
+  id: 9001,
+  body: '<!-- agent:run=261011T090312Z-a3f2 -->',
+  created_at: '2026-10-11T09:03:12Z',
+  user: { login: 'agent-orchestrator[bot]' },
+}
+
+// An out-of-order issue timeline: who applied `agent-ready` is the newest
+// matching labeled event, not the first one in the array.
+export const timelinePayload = [
+  {
+    event: 'labeled',
+    actor: { login: 'maintainer' },
+    label: { name: 'agent-ready' },
+    created_at: '2026-10-11T08:00:00Z',
+  },
+  { event: 'commented', actor: { login: 'passerby' }, created_at: '2026-10-11T08:30:00Z' },
+  {
+    event: 'labeled',
+    actor: { login: 'owner' },
+    label: { name: 'agent-ready' },
+    created_at: '2026-10-11T09:00:00Z',
+  },
+]

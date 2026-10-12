@@ -103,3 +103,9 @@ with side exits `agent-fix-needed`, `needs-human`, and `agent-blocked`
 (terminal). Every run-scoped comment carries `<!-- agent:run=<run_id> -->`,
 with `run_id` in the time-sortable format of
 [ADR-0005](./adr/0005-run-identity-and-journal-format.md).
+
+A label counts as a trigger only when a **collaborator** applied it (SEC2):
+the orchestrator reads the issue timeline to see who applied `agent-ready` and
+checks collaborator status before claiming. A run left in `agent-in-progress`
+longer than the reclaim window is escalated to `needs-human` rather than
+silently retried.

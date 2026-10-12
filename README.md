@@ -57,12 +57,14 @@ tracked in [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/
   *(done)*
 - **M1 — Read-only triage + plan gate:** config loader, GitHub adapter, run
   registry, journal, triage/plan prompts. *(in progress — C1 config loader, C14
-  journal, and the C2 App-auth path (credential read, JWT mint, installation
-  token) landed in [#12](https://github.com/jliguori1312/agent-orchestrator/pull/12),
-  [#13](https://github.com/jliguori1312/agent-orchestrator/pull/13), and
-  [#15](https://github.com/jliguori1312/agent-orchestrator/pull/15); the
-  `gh`-driven issue/label/comment operations, run registry, role prompts, and
-  the tick remain — see [AGENTS.md](AGENTS.md) for the PR-by-PR slice list)*
+  journal, the C2 App-auth path (credential read, JWT mint, installation
+  token), and the C2 `gh` adapter + C3 run registry landed in
+  [#12](https://github.com/jliguori1312/agent-orchestrator/pull/12),
+  [#13](https://github.com/jliguori1312/agent-orchestrator/pull/13),
+  [#15](https://github.com/jliguori1312/agent-orchestrator/pull/15), and
+  [#16](https://github.com/jliguori1312/agent-orchestrator/pull/16); the role
+  prompts, tier classifier/notifier, and the tick remain — see
+  [AGENTS.md](AGENTS.md) for the PR-by-PR slice list)*
 - **M2 — Plan-gated PRs (Tiers 0–3):** worktree manager, implement session,
   guardrails, verifier, dossier, draft PR, human merge.
 - **M3 — Adversarial review + metrics.**
