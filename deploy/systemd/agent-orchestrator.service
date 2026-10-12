@@ -21,7 +21,10 @@ WorkingDirectory=/opt/agent-orchestrator
 # agent's bash, verify.sh) do not inherit them. Non-secret config lives in
 # /opt/agent-orchestrator/orchestrator.jsonc.
 LoadCredential=app-key:/etc/agent-orchestrator/app.pem
-LoadCredential=anthropic-key:/etc/agent-orchestrator/anthropic.key
+# The model key is named "<provider>-key", matching model.provider in
+# orchestrator.jsonc (e.g. provider "openrouter" → openrouter-key /
+# openrouter.key). Keep this line in sync when the provider changes.
+LoadCredential=openrouter-key:/etc/agent-orchestrator/openrouter.key
 LoadCredential=cloudflare-token:/etc/agent-orchestrator/cloudflare.token
 # Placeholder entrypoint until M1 lands; point at the real CLI entry then.
 ExecStart=/usr/bin/node /opt/agent-orchestrator/dist/main.js

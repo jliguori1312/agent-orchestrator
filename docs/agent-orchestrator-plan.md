@@ -132,9 +132,10 @@ may. Every run-scoped comment carries `<!-- agent:run=<run_id> -->`.
 
 ## 7. Config (host + repo)
 
-- **Host** (`orchestrator.jsonc`): repo, base branch, workspace root, Pi
-  provider/model (and review-model override), verify command, slot count,
-  notification channel, egress policy (public-only; §3), protected-paths path.
+- **Host** (`orchestrator.jsonc`): repo, base branch, workspace root, a single
+  key-based Pi provider with a model per role (review may differ from
+  implement), verify command, slot count, notification channel, egress policy
+  (public-only; §3), protected-paths path.
 - **Repo** (`.github/agent.yml`): tier eligibility, diff budget, protected
   globs, plan-gate on/off, review model, labels.
 
@@ -204,8 +205,10 @@ and [ADR-0003](./adr/0003-orchestrator-authenticates-as-github-app.md):
 
 Still open:
 
-- **D5 — Models:** implement model vs review model (different provider models
-  reduce correlated blind spots). Decide before M3.
+- **D5 — Models:** resolved by the single-provider simplification. One
+  key-based provider at a time, with an explicit model per role; the review
+  role uses a different model on that same provider (correlated blind spots
+  are reduced by model, not provider).
 - **D7 — Agent session user:** run the Pi agent session as a separate,
   lower-privilege user than the secret-holding orchestrator process (both are
   currently `agent-orchestrator`, so the agent's `bash` could read the App key

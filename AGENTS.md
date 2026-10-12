@@ -43,8 +43,9 @@ which carries a dated status snapshot.
 - **Working rhythm:** TDD per slice (tests drafted and reviewed first, then
   implemented to green); gates must be green on every PR
   (`pnpm typecheck && pnpm lint && pnpm test`).
-- **Open decisions:** D5 (implement vs review model, due before M3); D7
-  (separate agent session user, due before M2).
+- **Open decisions:** D7 (separate agent session user, due before M2). D5
+  (models) is resolved: one key-based provider at a time with a model per role
+  ([config reference](docs/config-reference.md)).
 
 ## Layout
 

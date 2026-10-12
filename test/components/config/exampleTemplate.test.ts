@@ -16,4 +16,12 @@ describe('orchestrator.example.jsonc (template drift guard)', () => {
     expect(config.target.base).toBe('main')
     expect(config.github_app.app_id).toBe('123456')
   })
+
+  it('carries a provider and a model for every role', () => {
+    const config = loadHostConfig(templatePath)
+
+    for (const role of ['triage', 'plan', 'implement', 'review'] as const) {
+      expect(config.model[role].trim(), role).not.toBe('')
+    }
+  })
 })

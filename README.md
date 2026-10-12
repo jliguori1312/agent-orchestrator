@@ -73,7 +73,7 @@ tracked in [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/
 
 - Node.js 24 (`.nvmrc`) + pnpm
 - `gh` CLI (≥ 2.94)
-- `pi` CLI, plus a model provider (or local Ollama)
+- `pi` CLI, plus a key-based model provider (OpenRouter, OpenCode, Anthropic, or local Ollama)
 - A Linux host with `systemd` (recommended: an unprivileged LXC)
 
 ## Quick start

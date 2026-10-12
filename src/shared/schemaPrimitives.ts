@@ -19,6 +19,14 @@ export const appIdentifier = z.string().regex(/^\d+$/, { error: 'must be a strin
 // mistakes, not tight-but-valid limits.
 export const positiveInteger = z.number().int().positive()
 
+// A provider id names the model provider (pi's provider id, e.g. "openrouter"
+// or "anthropic") and is turned into the systemd credential name "<id>-key",
+// so it must already satisfy readCredential's filename pattern (lowercase, no
+// slashes, dots, or whitespace).
+export const providerId = z.string().regex(/^[a-z0-9][a-z0-9-]*$/, {
+  error: 'must be a lowercase id of letters, digits, and hyphens (becomes "<id>-key")',
+})
+
 // zod 4's built-in strictness reports an unknown key at the *parent's* path
 // ("Unrecognized key: 'deployment'" at path ['target']), with the typo itself
 // only in the message. Our contract — and human readability — requires the
