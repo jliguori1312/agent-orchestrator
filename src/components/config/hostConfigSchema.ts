@@ -8,6 +8,7 @@ import {
   appIdentifier,
   nonBlankString,
   positiveInteger,
+  providerId,
   strictObjectNamingTypos,
 } from '../../shared/schemaPrimitives.js'
 
@@ -24,12 +25,16 @@ export const hostConfigSchema = strictObjectNamingTypos({
   workspace: strictObjectNamingTypos({
     root: z.string().refine((value) => isAbsolute(value), { error: 'must be an absolute path' }),
   }),
+  // One key-based provider at a time, with a model chosen per role. The
+  // provider id also names the systemd credential ("<provider>-key"), so C5
+  // reads exactly one model key per deployment; every role is explicit rather
+  // than defaulted (review may still be a different model, on this provider).
   model: strictObjectNamingTypos({
-    provider: nonBlankString,
+    provider: providerId,
+    triage: nonBlankString,
+    plan: nonBlankString,
     implement: nonBlankString,
-    // D5 (implement vs review model) stays open until M3; an absent review
-    // model means review falls back to `implement`.
-    review: nonBlankString.optional(),
+    review: nonBlankString,
   }),
   verify: strictObjectNamingTypos({
     command: nonBlankString,

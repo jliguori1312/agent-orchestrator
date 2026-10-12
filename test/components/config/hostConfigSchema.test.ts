@@ -99,12 +99,52 @@ describe('hostConfigSchema', () => {
   })
 
   it('rejects a blank model or verify value', () => {
-    for (const blankPath of ['model.provider', 'model.implement', 'verify.command']) {
+    for (const blankPath of [
+      'model.provider',
+      'model.triage',
+      'model.plan',
+      'model.implement',
+      'model.review',
+      'verify.command',
+    ]) {
       const broken = withProperty(validHostConfig, blankPath, '')
       const result = hostConfigSchema.safeParse(broken)
 
       expect(result.success, blankPath).toBe(false)
       if (!result.success) expect(issuePaths(result.error)).toContain(blankPath)
+    }
+  })
+
+  it('rejects a provider id that is not credential-name safe', () => {
+    for (const badProvider of ['OpenRouter', 'open.router', 'open/router', ' openrouter', '']) {
+      const broken = withProperty(validHostConfig, 'model.provider', badProvider)
+      const result = hostConfigSchema.safeParse(broken)
+
+      expect(result.success, `provider "${badProvider}"`).toBe(false)
+      if (!result.success) expect(issuePaths(result.error)).toContain('model.provider')
+    }
+  })
+
+  it('accepts a key-based provider other than anthropic', () => {
+    for (const provider of ['openrouter', 'opencode', 'ollama', 'cloudflare-workers-ai']) {
+      const broken = withProperty(validHostConfig, 'model.provider', provider)
+
+      expect(hostConfigSchema.safeParse(broken).success, provider).toBe(true)
+    }
+  })
+
+  it('accepts a model per role, and rejects a blank one for any role', () => {
+    for (const rolePath of [
+      'model.triage',
+      'model.plan',
+      'model.implement',
+      'model.review',
+    ]) {
+      const withModel = withProperty(validHostConfig, rolePath, 'some-model')
+      expect(hostConfigSchema.safeParse(withModel).success, rolePath).toBe(true)
+
+      const blankModel = withProperty(validHostConfig, rolePath, '')
+      expect(hostConfigSchema.safeParse(blankModel).success, `${rolePath} blank`).toBe(false)
     }
   })
 
@@ -129,6 +169,14 @@ describe('hostConfigSchema', () => {
 
     expect(result.success).toBe(false)
     if (!result.success) expect(issuePaths(result.error)).toContain('models')
+  })
+
+  it('rejects an unknown model role key, naming the typo', () => {
+    const typo = withProperty(validHostConfig, 'model.implementer', 'some-model')
+    const result = hostConfigSchema.safeParse(typo)
+
+    expect(result.success).toBe(false)
+    if (!result.success) expect(issuePaths(result.error)).toContain('model.implementer')
   })
 
   it('rejects unknown nested keys, naming the typo', () => {

@@ -3,13 +3,20 @@
 // states only the thing it cares about.
 
 // The smallest valid host config — structurally identical to
-// orchestrator.example.jsonc minus the optional review model (D5 stays open
-// until M3, so `model.review` may be absent).
+// orchestrator.example.jsonc. One key-based provider, with an explicit model
+// for each role; review is a different model on the same provider (D5 amended
+// by the single-provider simplification).
 export const validHostConfig = {
   target: { repo: 'owner/repo', base: 'main' },
   github_app: { app_id: '123456', installation_id: '789012' },
   workspace: { root: '/var/lib/agent-orchestrator' },
-  model: { provider: 'anthropic', implement: 'claude-sonnet-4-5' },
+  model: {
+    provider: 'anthropic',
+    triage: 'claude-sonnet-4-5',
+    plan: 'claude-sonnet-4-5',
+    implement: 'claude-sonnet-4-5',
+    review: 'claude-opus-4-6',
+  },
   verify: { command: './scripts/agent/verify.sh' },
   guardrails: {
     protected_paths: 'scripts/agent/protected-paths.txt',
@@ -36,7 +43,10 @@ export const requiredHostConfigPaths = [
   'github_app.installation_id',
   'workspace.root',
   'model.provider',
+  'model.triage',
+  'model.plan',
   'model.implement',
+  'model.review',
   'verify.command',
   'guardrails.protected_paths',
   'guardrails.diff_budget_lines',

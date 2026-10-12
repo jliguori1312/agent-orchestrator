@@ -19,9 +19,13 @@
   },
 
   "model": {
-    "provider": "anthropic",       // or a local provider, e.g. "ollama"
-    "implement": "claude-...",     // model for triage/plan/implement roles
-    "review": "..."                // different model for adversarial review (build plan D5)
+    "provider": "anthropic",      // ONE key-based provider (a pi provider id); the host
+                                   // loads its key as "<provider>-key" (e.g. anthropic-key)
+    "triage": "claude-...",        // model for the triage role
+    "plan": "claude-...",          // model for the plan role
+    "implement": "claude-...",     // model for the implement role
+    "review": "claude-..."         // model for the adversarial review role
+                                   // (a different model on the same provider — build plan D5)
   },
 
   "verify": {

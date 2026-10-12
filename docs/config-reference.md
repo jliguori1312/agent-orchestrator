@@ -36,9 +36,11 @@ template.
   },
 
   "model": {
-    "provider": "anthropic",  // or a local provider (e.g. ollama)
-    "implement": "claude-...", // model for triage/plan/implement roles
-    "review": "..."            // different model for adversarial review (D5)
+    "provider": "anthropic",  // ONE key-based provider (a pi provider id); id → credential "<id>-key"
+    "triage": "claude-...",   // model for the triage role
+    "plan": "claude-...",     // model for the plan role
+    "implement": "claude-...",// model for the implement role
+    "review": "claude-..."    // adversarial review: a different model, same provider (D5)
   },
 
   "verify": {
@@ -69,7 +71,7 @@ materializes each into the service's private `$CREDENTIALS_DIRECTORY`:
 | Credential | Source file | Consumed by |
 |---|---|---|
 | `app-key` | `/etc/agent-orchestrator/app.pem` | C2 — signs the GitHub App JWT |
-| `anthropic-key` | `/etc/agent-orchestrator/anthropic.key` | C5 — the model provider |
+| `<provider>-key` | `/etc/agent-orchestrator/<provider>.key` | C5 — the single model provider (`model.provider` + `-key`; e.g. provider `openrouter` → `openrouter-key` / `openrouter.key`) |
 | `cloudflare-token` | `/etc/agent-orchestrator/cloudflare.token` | `verify.sh` (read-only; `types:fresh`) |
 
 The code reads them from `$CREDENTIALS_DIRECTORY/<name>` via `readCredential`
@@ -92,7 +94,7 @@ diff_budget:
   max_files: 10
 protected_paths: scripts/agent/protected-paths.txt
 plan_gate: true             # G1 always-on for eligible tiers
-review_model: "..."         # optional per-repo override
+review_model: "..."         # optional per-repo override of the review model (same provider)
 ```
 
 ## Label state machine

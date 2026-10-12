@@ -50,7 +50,13 @@ describe('loadHostConfig', () => {
   "target": { "repo": "owner/repo", "base": "main" },
   "github_app": { "app_id": "123456", "installation_id": "789012" },
   "workspace": { "root": "/var/lib/agent-orchestrator" },
-  "model": { "provider": "anthropic", "implement": "claude-sonnet-4-5" },
+  "model": {
+    "provider": "anthropic",
+    "triage": "claude-sonnet-4-5",
+    "plan": "claude-sonnet-4-5",
+    "implement": "claude-sonnet-4-5",
+    "review": "claude-opus-4-6",
+  },
   "verify": { "command": "./scripts/agent/verify.sh" },
   "guardrails": {
     "protected_paths": "scripts/agent/protected-paths.txt",

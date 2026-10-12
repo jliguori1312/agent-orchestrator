@@ -24,8 +24,10 @@ running.
 - Unprivileged service user `agent-orchestrator` (no login), owning
   `/var/lib/agent-orchestrator`.
 - `/etc/agent-orchestrator/` (`root:root`, mode 0700) holding the secret files
-  `app.pem`, `anthropic.key`, and `cloudflare.token` (each `root:root` mode
-  0600), loaded via `LoadCredential=` — not environment variables.
+  `app.pem`, `<provider>.key`, and `cloudflare.token` (each `root:root` mode
+  0600), loaded via `LoadCredential=` — not environment variables. The model
+  key file follows `model.provider`: name it `<provider>.key` and load it as
+  the credential `<provider>-key`.
 - `orchestrator.jsonc` (gitignored) in the code checkout, holding the non-secret
   config (targets, GitHub App IDs, models, workspace, verify command).
 - Node 24 installed **system-wide** so `/usr/bin/node` resolves (a `nvm`-only

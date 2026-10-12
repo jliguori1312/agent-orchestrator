@@ -3,7 +3,7 @@
 // never enters the process environment; systemd materializes it under
 // $CREDENTIALS_DIRECTORY and the code reads $CREDENTIALS_DIRECTORY/<name>.
 // This seam is shared across components: C2 reads app-key, the tick entrypoint
-// reads anthropic-key for C5, and the verify path reads cloudflare-token.
+// reads "<provider>-key" for C5, and the verify path reads cloudflare-token.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { CredentialError } from './credentialError.js'
