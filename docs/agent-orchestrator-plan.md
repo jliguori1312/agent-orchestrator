@@ -234,7 +234,9 @@ Still open:
   - [x] PR 1 (#12): toolchain + C1 config loader
   - [x] PR 2 (#13): C14 journal + run identity ([ADR-0005](./adr/0005-run-identity-and-journal-format.md))
   - [x] PR 3 (#15): C2 part 1 — `readCredential` + App JWT mint/installation-token exchange
-  - [ ] PR 4: C2 part 2 (issues/labels/comments) + C3 run registry
+  - [x] PR 4 (#16): C2 part 2 (issues/labels/comments via `gh` + SEC2
+    collaborator check) + C3 run registry (label state machine + run-marker
+    comments)
   - [ ] PR 5: C5 agent driver + C6 role prompts
   - [ ] PR 6: C7 tier classifier + C15 notifier
   - [ ] PR 7: tick entrypoint (triage → plan comment → label)

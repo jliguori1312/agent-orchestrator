@@ -32,8 +32,10 @@ which carries a dated status snapshot.
   - [x] PR 3 (#15): C2 part 1 — `readCredential` (`src/shared/`,
     `$CREDENTIALS_DIRECTORY`) + GitHub App JWT mint + installation-token
     exchange (`src/components/github/`, ADR-0003)
-  - [ ] PR 4: C2 part 2 (issues/labels/comments via `gh`) + C3 run registry
-    (labels + `<!-- agent:run=<run_id> -->` marker comments)
+  - [x] PR 4 (#16): C2 part 2 — `gh`-driven issue/label/comment ops + SEC2
+    collaborator check (`src/components/github/`) + C3 run registry — label
+    state machine and `<!-- agent:run=<run_id> -->` markers
+    (`src/components/registry/`)
   - [ ] PR 5: C5 agent driver (`pi --print` adapter) + C6 role prompts
   - [ ] PR 6: C7 tier classifier + C15 notifier
   - [ ] PR 7: tick entrypoint — triage session → plan comment → label
@@ -47,7 +49,7 @@ which carries a dated status snapshot.
 
 | Path | Purpose |
 |---|---|
-| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), and C2 App auth (`github/`) exist so far |
+| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), C2 App auth + `gh` adapter (`github/`), and C3 run registry (`registry/`) exist so far |
 | `src/shared/` | Cross-component primitives: zod strict-object/field constraints + the systemd credential reader (`readCredential`) |
 | `src/prompts/` | Triage, plan, implement, review system prompts |
 | `test/` | Unit tests with mocked `gh` / `pi` / `git` / filesystem |
