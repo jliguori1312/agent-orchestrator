@@ -8,11 +8,9 @@
     "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "declaration": true,
-    "sourceMap": true
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"]
+  // src + test are both type-checked together; vitest executes TS directly, so
+  // no emit-layout options yet — they return when a real build script lands.
+  "include": ["src/**/*", "test/**/*", "vitest.config.ts"]
 }
