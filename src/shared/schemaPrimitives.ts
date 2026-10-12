@@ -1,7 +1,7 @@
-// Field constraints shared by the host-config and repo-policy schemas. The
-// two schemas must refuse the same failure shapes (blank strings, bad
-// budgets), so each rule lives here exactly once instead of drifting between
-// two files.
+// Field constraints and strictness helpers shared by every config/policy/
+// journal schema in the orchestrator. Schemas must refuse the same failure
+// shapes (blank strings, bad budgets, unknown keys), so each rule lives here
+// exactly once instead of drifting between components.
 import { z } from 'zod'
 
 // Hand-edited values must carry real content; a blank string is always a
