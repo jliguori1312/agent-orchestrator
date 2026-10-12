@@ -56,14 +56,18 @@ tracked in [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/
 - **M0 — Substrate + host:** provision the LXC; create + install the GitHub App.
   *(done)*
 - **M1 — Read-only triage + plan gate:** config loader, GitHub adapter, run
-  registry, journal, triage/plan prompts. *(in progress — C1 config loader, C14
-  journal, the C2 App-auth path (credential read, JWT mint, installation
-  token), and the C2 `gh` adapter + C3 run registry landed in
+  registry, journal, triage/plan prompts, tier classifier, notifier. *(in
+  progress — C1 config loader, C14 journal, the C2 App-auth path (credential
+  read, JWT mint, installation token), the C2 `gh` adapter + C3 run registry,
+  C5 agent driver + C6 role prompts, and C7 tier classifier + C15 notifier
+  landed in
   [#12](https://github.com/jliguori1312/agent-orchestrator/pull/12),
   [#13](https://github.com/jliguori1312/agent-orchestrator/pull/13),
-  [#15](https://github.com/jliguori1312/agent-orchestrator/pull/15), and
-  [#16](https://github.com/jliguori1312/agent-orchestrator/pull/16); the role
-  prompts, tier classifier/notifier, and the tick remain — see
+  [#15](https://github.com/jliguori1312/agent-orchestrator/pull/15),
+  [#16](https://github.com/jliguori1312/agent-orchestrator/pull/16),
+  [#17](https://github.com/jliguori1312/agent-orchestrator/pull/17), and
+  [#19](https://github.com/jliguori1312/agent-orchestrator/pull/19); the tick
+  entrypoint (triage → plan comment → label) remains — see
   [AGENTS.md](AGENTS.md) for the PR-by-PR slice list)*
 - **M2 — Plan-gated PRs (Tiers 0–3):** worktree manager, implement session,
   guardrails, verifier, dossier, draft PR, human merge.
