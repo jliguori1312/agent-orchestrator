@@ -230,7 +230,9 @@ describe('claimNextRun', () => {
 
     const outcome = await claimNextRun({ github, journal, generateRunId: () => RUN_ID })
 
-    expect(outcome).toEqual({ kind: 'claimed', runId: RUN_ID })
+    expect(outcome?.outcome).toEqual({ kind: 'claimed', runId: RUN_ID })
+    expect(outcome?.issue.number).toBe(42)
+    expect(outcome?.actor).toBe('maintainer')
     expect(labelChanges).toEqual([
       { issueNumber: 42, add: [LABELS.inProgress], remove: [LABELS.ready] },
     ])
@@ -253,7 +255,9 @@ describe('claimNextRun', () => {
 
     const outcome = await claimNextRun({ github, journal, generateRunId: () => RUN_ID })
 
-    expect(outcome).toEqual({ kind: 'claimed', runId: RUN_ID })
+    expect(outcome?.outcome).toEqual({ kind: 'claimed', runId: RUN_ID })
+    expect(outcome?.issue.number).toBe(43)
+    expect(outcome?.actor).toBe('maintainer')
     expect(labelChanges).toEqual([
       { issueNumber: 43, add: [LABELS.inProgress], remove: [LABELS.ready] },
     ])

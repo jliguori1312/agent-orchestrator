@@ -19,6 +19,14 @@ Until M1's entrypoint exists, `ExecStart` points at a placeholder
 The M0 exit criterion is `verify.sh` green in-host, not the orchestrator
 running.
 
+The service runs the compiled entrypoint, so build once (and rebuild on every
+deploy) from the checkout:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm build          # emits dist/main.js — the ExecStart target
+```
+
 ## Prerequisites
 
 - Unprivileged service user `agent-orchestrator` (no login), owning
@@ -30,6 +38,10 @@ running.
   the credential `<provider>-key`.
 - `orchestrator.jsonc` (gitignored) in the code checkout, holding the non-secret
   config (targets, GitHub App IDs, models, workspace, verify command).
+- The target repo cloned **read-only** at `<workspace.root>/<repo-name>` (M1
+  substrate: the tick's read-only sessions inspect this checkout). C4 owns the
+  writable worktree lifecycle in M2; the tick treats a missing clone as a hard
+  error.
 - Node 24 installed **system-wide** so `/usr/bin/node` resolves (a `nvm`-only
   Node is invisible to systemd).
 

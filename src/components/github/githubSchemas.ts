@@ -16,6 +16,9 @@ const githubLabelSchema = z.object({
 export const githubIssueSchema = z.object({
   number: z.number().int().positive(),
   title: nonBlankString,
+  // GitHub returns null for an issue opened without a description, so the
+  // triage/plan prompt reads it through a nullable rather than assuming text.
+  body: z.string().nullable(),
   state: nonBlankString,
   labels: z.array(githubLabelSchema),
   user: githubUserSchema.nullable(),
@@ -40,6 +43,15 @@ export const githubTimelineEventSchema = z.object({
   created_at: z.string().optional(),
 })
 
+// The /repos/{owner}/{repo}/contents/{path} payload. GitHub base64-encodes the
+// file body; `encoding` is asserted ("base64") before decoding so a foreign
+// encoding can never be silently interpreted as UTF-8 text.
+export const githubContentsSchema = z.object({
+  content: z.string(),
+  encoding: nonBlankString,
+})
+
 export type GithubIssue = z.infer<typeof githubIssueSchema>
 export type GithubComment = z.infer<typeof githubCommentSchema>
 export type GithubTimelineEvent = z.infer<typeof githubTimelineEventSchema>
+export type GithubContents = z.infer<typeof githubContentsSchema>

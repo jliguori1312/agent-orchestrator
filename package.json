@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "description": "Self-hosted, human-merged agent orchestrator (Pi + gh + git worktrees).",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run"

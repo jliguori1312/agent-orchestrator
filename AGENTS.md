@@ -40,7 +40,8 @@ which carries a dated status snapshot.
     `src/components/agent/`) + C6 role prompts (`src/prompts/`)
   - [x] PR 6 (#19): C7 tier classifier (`src/components/tier/`) + C15 notifier
     (`src/components/notifier/`)
-  - [ ] PR 7: tick entrypoint — triage session → plan comment → label
+  - [x] PR 7 (#20): tick entrypoint — triage session → plan comment → label
+    (`src/components/tick/` + `src/main.ts`)
 - **Working rhythm:** TDD per slice (tests drafted and reviewed first, then
   implemented to green); gates must be green on every PR
   (`pnpm typecheck && pnpm lint && pnpm test`).
@@ -52,7 +53,8 @@ which carries a dated status snapshot.
 
 | Path | Purpose |
 |---|---|
-| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), C2 App auth + `gh` adapter (`github/`), C3 run registry (`registry/`), C5 agent driver (`agent/`), C7 tier classifier (`tier/`), and C15 notifier (`notifier/`) exist so far |
+| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), C2 App auth + `gh` adapter (`github/`), C3 run registry (`registry/`), C5 agent driver (`agent/`), C7 tier classifier (`tier/`), C15 notifier (`notifier/`), and the M1 tick orchestration (`tick/`) exist so far |
+| `src/main.ts` | Process entrypoint: wires the real boundaries into the tick (`runTick`) and maps the outcome to a process exit code |
 | `src/shared/` | Cross-component primitives: zod strict-object/field constraints + the systemd credential reader (`readCredential`) |
 | `src/prompts/` | C6 role system prompts + S4 tool allowlists (`triage`, `plan`, `implement`, `review`) |
 | `test/` | Unit tests with mocked `gh` / `pi` / `git` / filesystem |

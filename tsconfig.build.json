@@ -1,0 +1,14 @@
+{
+  // Emit config used only by `pnpm build`. The base tsconfig stays emit-free for
+  // typechecking src + test together; this one compiles src alone into dist/ so
+  // the systemd unit's ExecStart (`node dist/main.js`) has something to run.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    "sourceMap": true,
+    "declaration": false
+  },
+  "include": ["src/**/*"]
+}

@@ -26,7 +26,8 @@ LoadCredential=app-key:/etc/agent-orchestrator/app.pem
 # openrouter.key). Keep this line in sync when the provider changes.
 LoadCredential=openrouter-key:/etc/agent-orchestrator/openrouter.key
 LoadCredential=cloudflare-token:/etc/agent-orchestrator/cloudflare.token
-# Placeholder entrypoint until M1 lands; point at the real CLI entry then.
+# The M1 tick entrypoint: one run per timer invocation (single slot, ADR-0002
+# D2). Build it first with `pnpm build` (see README.md).
 ExecStart=/usr/bin/node /opt/agent-orchestrator/dist/main.js
 TimeoutStartSec=30min
 
