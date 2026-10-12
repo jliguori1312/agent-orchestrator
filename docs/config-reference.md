@@ -72,11 +72,13 @@ materializes each into the service's private `$CREDENTIALS_DIRECTORY`:
 | `anthropic-key` | `/etc/agent-orchestrator/anthropic.key` | C5 — the model provider |
 | `cloudflare-token` | `/etc/agent-orchestrator/cloudflare.token` | `verify.sh` (read-only; `types:fresh`) |
 
-The code reads them from `$CREDENTIALS_DIRECTORY/<name>`.
+The code reads them from `$CREDENTIALS_DIRECTORY/<name>` via `readCredential`
+(`src/shared/`), which refuses any name that is not a safe filename segment.
 
 [`.env.example`](../.env.example) is a **dev-only** convenience for running the
-orchestrator manually (outside systemd) during M1. It is not the host
-mechanism.
+orchestrator manually (outside systemd) during M1 — it points
+`CREDENTIALS_DIRECTORY` at the directory holding those three files. It is not
+the host mechanism.
 
 ## `.github/agent.yml` (target-repo policy)
 

@@ -29,8 +29,9 @@ which carries a dated status snapshot.
     job) + C1 config loader (`src/components/config/`, strict zod schemas)
   - [x] PR 2 (#13): C14 journal + run identity (`src/components/journal/`,
     ADR-0005) + shared zod primitives (`src/shared/`)
-  - [ ] PR 3: C2 part 1 — `readCredential` (`$CREDENTIALS_DIRECTORY`) +
-    GitHub App JWT mint + installation-token refresh (ADR-0003)
+  - [x] PR 3 (#15): C2 part 1 — `readCredential` (`src/shared/`,
+    `$CREDENTIALS_DIRECTORY`) + GitHub App JWT mint + installation-token
+    exchange (`src/components/github/`, ADR-0003)
   - [ ] PR 4: C2 part 2 (issues/labels/comments via `gh`) + C3 run registry
     (labels + `<!-- agent:run=<run_id> -->` marker comments)
   - [ ] PR 5: C5 agent driver (`pi --print` adapter) + C6 role prompts
@@ -46,8 +47,8 @@ which carries a dated status snapshot.
 
 | Path | Purpose |
 |---|---|
-| `src/components/` | C1–C16 components; C1 config loader (`config/`) and C14 journal (`journal/`) exist so far |
-| `src/shared/` | Cross-component zod primitives (strict objects, field constraints) |
+| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), and C2 App auth (`github/`) exist so far |
+| `src/shared/` | Cross-component primitives: zod strict-object/field constraints + the systemd credential reader (`readCredential`) |
 | `src/prompts/` | Triage, plan, implement, review system prompts |
 | `test/` | Unit tests with mocked `gh` / `pi` / `git` / filesystem |
 | `docs/` | Build plan, framework, config reference, ADRs |
