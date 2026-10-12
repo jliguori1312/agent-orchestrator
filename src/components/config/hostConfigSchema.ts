@@ -9,7 +9,7 @@ import {
   nonBlankString,
   positiveInteger,
   strictObjectNamingTypos,
-} from './schemaPrimitives.js'
+} from '../../shared/schemaPrimitives.js'
 
 export const hostConfigSchema = strictObjectNamingTypos({
   target: strictObjectNamingTypos({

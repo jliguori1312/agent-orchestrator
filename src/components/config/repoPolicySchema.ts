@@ -3,7 +3,11 @@
 // unknown keys are refused, never ignored. Labels deliberately have no place
 // here — the label state machine lives in code (plan §6).
 import { z } from 'zod'
-import { nonBlankString, positiveInteger, strictObjectNamingTypos } from './schemaPrimitives.js'
+import {
+  nonBlankString,
+  positiveInteger,
+  strictObjectNamingTypos,
+} from '../../shared/schemaPrimitives.js'
 
 export const repoPolicySchema = strictObjectNamingTypos({
   tiers: strictObjectNamingTypos({
