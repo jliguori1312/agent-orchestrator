@@ -19,23 +19,35 @@ plan, and ADRs are canonical here now. The first target repo keeps only its own
 policy ([issue #518](https://github.com/jliguori1312/pottery-studio-system/issues/518));
 a follow-up PR in that repo (`chore/relocate-orchestrator-docs`) removes the
 migrated docs. Work is tracked in
-[issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/1).
+[issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/1),
+which carries a dated status snapshot.
 
-- **Done:** repo scaffolded; framework, build plan, ADRs, and config templates
-  committed. No source code yet.
-- **Human-only (M0):** provision the unprivileged LXC; create + install the
-  GitHub App; set branch protection/rulesets. An agent cannot do these.
-- **Agent-doable now (M1):** scaffold components C1–C7, C14, C15 (config
-  loader, GitHub adapter with App token mint/refresh, run registry, journal,
-  notifier, triage/plan prompts, tier classifier) with mocked-boundary unit
-  tests. Can proceed in parallel with M0.
-- **Open decision:** D5 (implement vs review model) — due before M3.
+- **M0 done (human-only):** LXC provisioned, GitHub App created and installed
+  on the first target repo, branch protection set. An agent cannot redo these.
+- **M1 in progress** (read-only triage + plan gate), sliced into PRs:
+  - [x] PR 1 (#12): toolchain (TypeScript 6, ESLint 10, Vitest 5, CI build
+    job) + C1 config loader (`src/components/config/`, strict zod schemas)
+  - [x] PR 2 (#13): C14 journal + run identity (`src/components/journal/`,
+    ADR-0005) + shared zod primitives (`src/shared/`)
+  - [ ] PR 3: C2 part 1 — `readCredential` (`$CREDENTIALS_DIRECTORY`) +
+    GitHub App JWT mint + installation-token refresh (ADR-0003)
+  - [ ] PR 4: C2 part 2 (issues/labels/comments via `gh`) + C3 run registry
+    (labels + `<!-- agent:run=<run_id> -->` marker comments)
+  - [ ] PR 5: C5 agent driver (`pi --print` adapter) + C6 role prompts
+  - [ ] PR 6: C7 tier classifier + C15 notifier
+  - [ ] PR 7: tick entrypoint — triage session → plan comment → label
+- **Working rhythm:** TDD per slice (tests drafted and reviewed first, then
+  implemented to green); gates must be green on every PR
+  (`pnpm typecheck && pnpm lint && pnpm test`).
+- **Open decisions:** D5 (implement vs review model, due before M3); D7
+  (separate agent session user, due before M2).
 
 ## Layout
 
 | Path | Purpose |
 |---|---|
-| `src/components/` | C1–C16 components (config loader, GitHub adapter, run registry, worktree manager, agent driver, role prompts, tier classifier, plan gate, guardrails, verifier, reviewer, dossier writer, merge handoff, journal, notifier, metrics) |
+| `src/components/` | C1–C16 components; C1 config loader (`config/`) and C14 journal (`journal/`) exist so far |
+| `src/shared/` | Cross-component zod primitives (strict objects, field constraints) |
 | `src/prompts/` | Triage, plan, implement, review system prompts |
 | `test/` | Unit tests with mocked `gh` / `pi` / `git` / filesystem |
 | `docs/` | Build plan, framework, config reference, ADRs |
@@ -63,7 +75,7 @@ migrated docs. Work is tracked in
 - Config validation uses zod; host config and target-repo policy fail fast with
   clear messages.
 
-## Commands (once M1 dependencies land)
+## Commands
 
 ```bash
 pnpm install
@@ -83,7 +95,8 @@ pnpm test        # vitest
 ## Related
 
 - Build tracker: [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/1)
-- [ADR log](docs/adr/) — build-the-thin-orchestrator (0001), runtime decisions
-  (0002), GitHub App identity (0003).
+- [ADR log](docs/adr/) — thin orchestrator (0001), runtime decisions (0002),
+  GitHub App identity (0003), hardened system unit (0004), run identity +
+  journal format (0005).
 - First target repo policy:
   [pottery-studio-system #518](https://github.com/jliguori1312/pottery-studio-system/issues/518).

@@ -31,7 +31,8 @@ template.
   },
 
   "workspace": {
-    "root": "/var/lib/agent-orchestrator"   // repos cloned + worktrees created here
+    "root": "/var/lib/agent-orchestrator"   // repos cloned + worktrees created here;
+                                            // journal shards derive at <root>/journal/ (ADR-0005)
   },
 
   "model": {
@@ -97,4 +98,6 @@ review_model: "..."         # optional per-repo override
 `agent-ready` → `agent-in-progress` → `needs-human-plan-approval` →
 (`agent-approved`) → `agent-pr-opened` → `agent-merged` (terminal, by a human),
 with side exits `agent-fix-needed`, `needs-human`, and `agent-blocked`
-(terminal). Every run-scoped comment carries `<!-- agent:run=<run_id> -->`.
+(terminal). Every run-scoped comment carries `<!-- agent:run=<run_id> -->`,
+with `run_id` in the time-sortable format of
+[ADR-0005](./adr/0005-run-identity-and-journal-format.md).
