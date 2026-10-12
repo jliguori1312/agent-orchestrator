@@ -21,8 +21,11 @@ const INELIGIBLE_NOTICE: NeedsHumanNotice = {
   actor: 'maintainer',
 }
 
+const PLAN_BODY = '## Plan\n\n1. Do the thing.'
+
 const PLAN_READY_NOTICE: NeedsHumanNotice = {
   reason: 'plan-ready',
+  plan: PLAN_BODY,
   runId: RUN_ID,
   issueNumber: 42,
   actor: 'maintainer',
@@ -57,10 +60,16 @@ describe('composeNeedsHumanComment', () => {
     expect(body).toContain(`<!-- agent:run=${RUN_ID} -->`)
     expect(body).toContain('@maintainer')
     expect(body).toMatch(/plan is ready/i)
+    // The plan comment itself is the notification, so the plan body is embedded.
+    expect(body).toContain(PLAN_BODY)
   })
 
-  it('names the tier on an ineligible-tier notice', () => {
-    expect(composeNeedsHumanComment(INELIGIBLE_NOTICE)).toContain('tier 7')
+  it('marks an ineligible tier as not agent-eligible, naming the tier', () => {
+    const body = composeNeedsHumanComment(INELIGIBLE_NOTICE)
+
+    expect(body).toContain('tier 7')
+    expect(body).toContain('security or sensitive')
+    expect(body).toMatch(/not agent-eligible/i)
   })
 
   it('does not name a tier on an unclassified-tier notice', () => {

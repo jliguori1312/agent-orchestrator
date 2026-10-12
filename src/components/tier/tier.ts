@@ -16,6 +16,23 @@ export function isTier(value: number): value is Tier {
   return Number.isInteger(value) && value >= TIER_MIN && value <= TIER_MAX
 }
 
+// The framework's tier classes (§2) as the single in-code mapping from tier
+// number to name. The triage prompt restates these for the model; this table
+// is what the notifier names in a human-facing message, and the tier-mapping
+// test keeps it complete over 0–9.
+export const TIER_NAMES: Record<Tier, string> = {
+  0: 'mechanical',
+  1: 'tests',
+  2: 'small UI or content',
+  3: 'localized bugfix',
+  4: 'refactor',
+  5: 'cross-cutting',
+  6: 'schema or migration',
+  7: 'security or sensitive',
+  8: 'hardware or infra',
+  9: 'generated files',
+}
+
 export function tierMarkerFor(tier: Tier): string {
   return `<!-- agent:tier=${tier} -->`
 }

@@ -8,6 +8,7 @@ import {
   isTier,
   TIER_MAX,
   TIER_MIN,
+  TIER_NAMES,
   tierMarkerFor,
   type Tier,
 } from '../../../src/components/tier/tier.js'
@@ -67,5 +68,16 @@ describe('isTier', () => {
     expect(isTier(10)).toBe(false)
     expect(isTier(3.5)).toBe(false)
     expect(isTier(Number.NaN)).toBe(false)
+  })
+})
+
+describe('TIER_NAMES', () => {
+  it('maps every tier 0–9 to a non-blank class name', () => {
+    expect(Object.keys(TIER_NAMES).sort()).toEqual(
+      Array.from({ length: TIER_MAX - TIER_MIN + 1 }, (_, index) => String(TIER_MIN + index)),
+    )
+    for (const name of Object.values(TIER_NAMES)) {
+      expect(name.trim()).not.toBe('')
+    }
   })
 })

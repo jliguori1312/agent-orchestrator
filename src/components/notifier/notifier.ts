@@ -4,10 +4,11 @@
 // composes the mention comment and posts it — nothing more.
 import type { JournalEventInput } from '../journal/journal.js'
 import { markerFor } from '../registry/runMarker.js'
-import type { Tier } from '../tier/tier.js'
+import { TIER_NAMES, type Tier } from '../tier/tier.js'
 
-// A discriminated union on `reason` so `tier` exists only where it is
-// meaningful: an ineligible-tier notice names the tier, the others cannot.
+// A discriminated union on `reason` so each notice carries only what its
+// reason needs: the tier for an ineligible-tier notice, the plan body for a
+// plan-ready one, and neither for an unclassified triage.
 export type NeedsHumanNotice =
   | {
       readonly reason: 'ineligible-tier'
@@ -24,6 +25,7 @@ export type NeedsHumanNotice =
     }
   | {
       readonly reason: 'plan-ready'
+      readonly plan: string
       readonly runId: string
       readonly issueNumber: number
       readonly actor: string
@@ -45,11 +47,11 @@ export interface NotifierJournal {
 function describeNotice(notice: NeedsHumanNotice): string {
   switch (notice.reason) {
     case 'ineligible-tier':
-      return `triage classified this issue as tier ${notice.tier}, outside the tiers this repository lets the agent attempt. No implementation will start; a human should decide how to proceed.`
+      return `triage classified this issue as tier ${notice.tier} (${TIER_NAMES[notice.tier]}), which is not agent-eligible for this repository. No implementation will start — a human should decide how to proceed.`
     case 'unclassified-tier':
       return 'triage produced no machine-readable tier for this issue. Rather than guess, the run stops here for a human decision.'
     case 'plan-ready':
-      return 'a plan is ready for review. Approve with `/approve-plan` or leave feedback.'
+      return `a plan is ready for review. Approve with \`/approve-plan\` or leave feedback.\n\n---\n\n${notice.plan}`
   }
 }
 
