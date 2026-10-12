@@ -4,13 +4,17 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "lib": ["ES2023"],
+    // Node's globals/`node:` modules are the runtime; make the dependency
+    // explicit so a narrowed include (tsconfig.build.json) still resolves them.
+    "types": ["node"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  // src + test are both type-checked together; vitest executes TS directly, so
-  // no emit-layout options yet — they return when a real build script lands.
+  // src + test are both type-checked together; vitest executes TS directly.
+  // Emit is handled by tsconfig.build.json (see `pnpm build`), which compiles
+  // src alone into dist/ for the systemd unit's ExecStart.
   "include": ["src/**/*", "test/**/*", "vitest.config.ts"]
 }

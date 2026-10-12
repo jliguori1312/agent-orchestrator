@@ -11,7 +11,9 @@ import {
 import type { GhResult } from '../../../src/components/github/ghRunner.js'
 import {
   commentPayload,
+  contentsPayload,
   issuePayload,
+  POLICY_TEXT,
   pullRequestPayload,
   timelinePayload,
 } from './fixtures.js'
@@ -182,6 +184,46 @@ describe('installation-token handling', () => {
     await expect(client.getIssue(42)).rejects.toThrow(GitHubError)
     expect(ghCalls).toHaveLength(1)
     expect(tokenCalls).toEqual(['only_token'])
+  })
+})
+
+describe('getRepoFile', () => {
+  it('decodes the base64 contents payload to text', async () => {
+    const { client, ghCalls } = createTestClient([okResponse(JSON.stringify(contentsPayload))], ['ghs_one'])
+
+    await expect(client.getRepoFile('.github/agent.yml')).resolves.toBe(POLICY_TEXT)
+    expect(ghCalls[0]?.args).toEqual([
+      'api',
+      'repos/octo/widgets/contents/.github/agent.yml',
+    ])
+  })
+
+  it('reports a missing file as a 404 GitHubError', async () => {
+    const { client } = createTestClient([httpErrorResponse(404, 'Not Found')], ['ghs_one'])
+
+    // The tick distinguishes "no policy" from "policy unreadable" by status.
+    const failure = await client.getRepoFile('.github/agent.yml').catch((error: unknown) => error)
+    expect(failure).toBeInstanceOf(GitHubError)
+    expect((failure as GitHubError).httpStatus).toBe(404)
+  })
+
+  it('refuses an unexpected encoding rather than decoding mojibake', async () => {
+    const { client } = createTestClient(
+      [okResponse(JSON.stringify({ content: 'plain text', encoding: 'utf-8' }))],
+      ['ghs_one'],
+    )
+
+    await expect(client.getRepoFile('.github/agent.yml')).rejects.toThrow(GitHubError)
+  })
+
+  it('refreshes the token and retries on a 401', async () => {
+    const { client, ghCalls } = createTestClient(
+      [httpErrorResponse(401, 'Bad credentials'), okResponse(JSON.stringify(contentsPayload))],
+      ['expired_token', 'fresh_token'],
+    )
+
+    await expect(client.getRepoFile('.github/agent.yml')).resolves.toBe(POLICY_TEXT)
+    expect(ghCalls.map((call) => call.token)).toEqual(['expired_token', 'fresh_token'])
   })
 })
 

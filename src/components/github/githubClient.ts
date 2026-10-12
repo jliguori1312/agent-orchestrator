@@ -16,6 +16,7 @@ import {
 } from './ghRunner.js'
 import {
   githubCommentSchema,
+  githubContentsSchema,
   githubIssueSchema,
   githubTimelineEventSchema,
   type GithubComment,
@@ -49,6 +50,10 @@ export interface GitHubClient {
   setLabels(issueNumber: number, change: LabelChange): Promise<void>
   lastLabelActor(issueNumber: number, labelName: string): Promise<string | null>
   isCollaborator(login: string): Promise<boolean>
+  // The raw text of one repo file (e.g. the target repo's .github/agent.yml
+  // policy). A missing file is a GitHubError with httpStatus 404, so callers
+  // can distinguish "no policy" from "policy unreadable".
+  getRepoFile(path: string): Promise<string>
 }
 
 export function createGitHubClient(deps: GitHubClientDeps): GitHubClient {
@@ -153,6 +158,23 @@ export function createGitHubClient(deps: GitHubClientDeps): GitHubClient {
         `Cannot check collaborator ${login} on ${deps.repo}: ${firstLine(result.stderr)}`,
         httpStatus,
       )
+    },
+
+    async getRepoFile(path) {
+      const contentsPath = `repos/${owner}/${name}/contents/${path}`
+      const contents = await json(['api', contentsPath], githubContentsSchema)
+
+      // The contents API can answer with a different encoding for large files;
+      // decoding that as base64 would produce mojibake, so it is refused.
+      if (contents.encoding !== 'base64') {
+        throw new GitHubError(
+          `${contentsPath} returned unexpected encoding "${contents.encoding}"`,
+        )
+      }
+
+      // GitHub wraps the base64 body at 60 characters; Buffer ignores the
+      // newlines, so no manual unwrapping is needed.
+      return Buffer.from(contents.content, 'base64').toString('utf8')
     },
   }
 }

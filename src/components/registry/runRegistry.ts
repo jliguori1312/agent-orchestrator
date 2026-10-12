@@ -212,20 +212,30 @@ export async function reclaimStaleRun(input: {
 
 // The whole single-slot claim: pick the oldest ready issue whose trigger is
 // trusted, then claim it. An untrusted trigger is skipped, never actioned
-// (SEC2); a null result means there was nothing to do this tick.
-export async function claimNextRun(deps: RegistryDeps): Promise<ClaimOutcome | null> {
+// (SEC2); a null result means there was nothing to do this tick. The claimed
+// issue and the trusted actor ride along because the tick entrypoint needs the
+// issue body for the session prompt and the actor for the @mention notice.
+export interface ClaimedRun {
+  readonly outcome: ClaimOutcome
+  readonly issue: GithubIssue
+  readonly actor: string
+}
+
+export async function claimNextRun(deps: RegistryDeps): Promise<ClaimedRun | null> {
   const issues = await findAgentReadyIssues(deps.github)
 
   for (const issue of issues) {
+    let actor: string
     try {
-      await assertTrustedActor(deps.github, issue)
+      actor = await assertTrustedActor(deps.github, issue)
     } catch (failure) {
       if (failure instanceof RegistryError) continue
       throw failure
     }
 
     const runId = (deps.generateRunId ?? (() => generateRunId(deps.now)))()
-    return claimRun({ github: deps.github, journal: deps.journal, issue, runId })
+    const outcome = await claimRun({ github: deps.github, journal: deps.journal, issue, runId })
+    return { outcome, issue, actor }
   }
 
   return null

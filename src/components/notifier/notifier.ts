@@ -24,6 +24,12 @@ export type NeedsHumanNotice =
       readonly actor: string
     }
   | {
+      readonly reason: 'policy-unavailable'
+      readonly runId: string
+      readonly issueNumber: number
+      readonly actor: string
+    }
+  | {
       readonly reason: 'plan-ready'
       readonly plan: string
       readonly runId: string
@@ -50,6 +56,8 @@ function describeNotice(notice: NeedsHumanNotice): string {
       return `triage classified this issue as tier ${notice.tier} (${TIER_NAMES[notice.tier]}), which is not agent-eligible for this repository. No implementation will start — a human should decide how to proceed.`
     case 'unclassified-tier':
       return 'triage produced no machine-readable tier for this issue. Rather than guess, the run stops here for a human decision.'
+    case 'policy-unavailable':
+      return "this repository's `.github/agent.yml` policy could not be read or validated, so the issue's tier could not be checked against it. A human should fix the policy (or decide how to proceed) before an agent runs against this repository."
     case 'plan-ready':
       return `a plan is ready for review. Approve with \`/approve-plan\` or leave feedback.\n\n---\n\n${notice.plan}`
   }

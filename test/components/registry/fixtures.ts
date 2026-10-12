@@ -12,6 +12,7 @@ export function issue(number: number, labels: readonly string[]): GithubIssue {
   return {
     number,
     title: `Issue ${number}`,
+    body: `Description of issue ${number}.`,
     state: 'open',
     labels: labels.map((name) => ({ name })),
     user: { login: 'reporter' },

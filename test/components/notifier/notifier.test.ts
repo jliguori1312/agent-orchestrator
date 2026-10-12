@@ -31,6 +31,13 @@ const PLAN_READY_NOTICE: NeedsHumanNotice = {
   actor: 'maintainer',
 }
 
+const POLICY_NOTICE: NeedsHumanNotice = {
+  reason: 'policy-unavailable',
+  runId: RUN_ID,
+  issueNumber: 42,
+  actor: 'maintainer',
+}
+
 function createFakeNotifier(): {
   readonly github: NotifierGitHub
   readonly journal: NotifierJournal
@@ -83,6 +90,14 @@ describe('composeNeedsHumanComment', () => {
     expect(body).toMatch(/machine-readable tier/i)
     expect(body).not.toMatch(/tier \d/)
   })
+
+  it('names the policy file on a policy-unavailable notice', () => {
+    const body = composeNeedsHumanComment(POLICY_NOTICE)
+
+    expect(body).toContain(`<!-- agent:run=${RUN_ID} -->`)
+    expect(body).toContain('@maintainer')
+    expect(body).toContain('.github/agent.yml')
+  })
 })
 
 describe('notifyNeedsHuman', () => {
@@ -115,6 +130,22 @@ describe('notifyNeedsHuman', () => {
         event: 'notify.needs-human',
         issue: 42,
         data: { reason: 'plan-ready', actor: 'maintainer' },
+      },
+    ])
+  })
+
+  it('journals a policy-unavailable notice with no tier', async () => {
+    const { github, journal, posted, records } = createFakeNotifier()
+
+    await notifyNeedsHuman({ github, journal, notice: POLICY_NOTICE })
+
+    expect(posted).toEqual([{ issueNumber: 42, body: composeNeedsHumanComment(POLICY_NOTICE) }])
+    expect(records).toEqual([
+      {
+        run_id: RUN_ID,
+        event: 'notify.needs-human',
+        issue: 42,
+        data: { reason: 'policy-unavailable', actor: 'maintainer' },
       },
     ])
   })

@@ -243,4 +243,4 @@ Still open:
   - [x] PR 5 (#17): C5 agent driver + C6 role prompts
   - [x] PR 6 (#19): C7 tier classifier (`src/components/tier/`) + C15 notifier
     (`src/components/notifier/`)
-  - [ ] PR 7: tick entrypoint (triage → plan comment → label)
+  - [x] PR 7 (#20): tick entrypoint (triage → plan comment → label)

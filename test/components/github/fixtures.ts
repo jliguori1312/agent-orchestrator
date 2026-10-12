@@ -35,6 +35,7 @@ export function decodeJwtSegment(segment: string): unknown {
 export const issuePayload = {
   number: 42,
   title: 'Fix the widget',
+  body: 'The widget wobbles when spun.',
   state: 'open',
   labels: [{ name: 'agent-ready' }],
   user: { login: 'octocat' },
@@ -45,6 +46,7 @@ export const issuePayload = {
 export const pullRequestPayload = {
   number: 43,
   title: 'A pull request that looks like an issue',
+  body: '',
   state: 'open',
   labels: [{ name: 'agent-ready' }],
   user: { login: 'octocat' },
@@ -58,6 +60,16 @@ export const commentPayload = {
   created_at: '2026-10-11T09:03:12Z',
   user: { login: 'agent-orchestrator[bot]' },
 }
+
+// A /contents payload holding the base64-encoded policy text. GitHub wraps the
+// base64 body at 60 characters; the embedded newline proves the adapter
+// tolerates that wrapping rather than assuming a single line.
+export const contentsPayload = {
+  content: Buffer.from('tiers:\n  eligible: [0, 1, 2, 3]\n').toString('base64'),
+  encoding: 'base64',
+}
+
+export const POLICY_TEXT = 'tiers:\n  eligible: [0, 1, 2, 3]\n'
 
 // An out-of-order issue timeline: who applied `agent-ready` is the newest
 // matching labeled event, not the first one in the array.
