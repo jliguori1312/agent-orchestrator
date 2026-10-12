@@ -36,7 +36,8 @@ which carries a dated status snapshot.
     collaborator check (`src/components/github/`) + C3 run registry — label
     state machine and `<!-- agent:run=<run_id> -->` markers
     (`src/components/registry/`)
-  - [ ] PR 5: C5 agent driver (`pi --print` adapter) + C6 role prompts
+  - [x] PR 5 (#17): C5 agent driver (`pi --print` adapter,
+    `src/components/agent/`) + C6 role prompts (`src/prompts/`)
   - [ ] PR 6: C7 tier classifier + C15 notifier
   - [ ] PR 7: tick entrypoint — triage session → plan comment → label
 - **Working rhythm:** TDD per slice (tests drafted and reviewed first, then
@@ -49,9 +50,9 @@ which carries a dated status snapshot.
 
 | Path | Purpose |
 |---|---|
-| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), C2 App auth + `gh` adapter (`github/`), and C3 run registry (`registry/`) exist so far |
+| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), C2 App auth + `gh` adapter (`github/`), C3 run registry (`registry/`), and C5 agent driver (`agent/`) exist so far |
 | `src/shared/` | Cross-component primitives: zod strict-object/field constraints + the systemd credential reader (`readCredential`) |
-| `src/prompts/` | Triage, plan, implement, review system prompts |
+| `src/prompts/` | C6 role system prompts + S4 tool allowlists (`triage`, `plan`, `implement`, `review`) |
 | `test/` | Unit tests with mocked `gh` / `pi` / `git` / filesystem |
 | `docs/` | Build plan, framework, config reference, ADRs |
 | `deploy/systemd/` | Host systemd unit + timer templates (ADR-0004) |

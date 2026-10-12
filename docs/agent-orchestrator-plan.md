@@ -237,6 +237,6 @@ Still open:
   - [x] PR 4 (#16): C2 part 2 (issues/labels/comments via `gh` + SEC2
     collaborator check) + C3 run registry (label state machine + run-marker
     comments)
-  - [ ] PR 5: C5 agent driver + C6 role prompts
+  - [x] PR 5 (#17): C5 agent driver + C6 role prompts
   - [ ] PR 6: C7 tier classifier + C15 notifier
   - [ ] PR 7: tick entrypoint (triage → plan comment → label)
