@@ -6,11 +6,11 @@ import { repoPolicySchema } from '../../../src/components/config/repoPolicySchem
 import { issuePaths, validRepoPolicy, withProperty, withoutProperty } from './fixtures.js'
 
 describe('repoPolicySchema', () => {
-  it('accepts the valid fixture unchanged', () => {
+  it('accepts the valid fixture, applying the plan_gate default (D3)', () => {
     const result = repoPolicySchema.safeParse(validRepoPolicy)
 
     expect(result.success).toBe(true)
-    if (result.success) expect(result.data).toEqual(validRepoPolicy)
+    if (result.success) expect(result.data).toEqual({ ...validRepoPolicy, plan_gate: true })
   })
 
   it('defaults plan_gate to true when omitted — always-on for eligible tiers (D3)', () => {

@@ -34,7 +34,7 @@ plan_gate: true             # G1 always-on for eligible tiers`
   it('parses a policy without an explicit plan_gate, defaulting it to true', () => {
     const noGate = referenceYaml.replace(/plan_gate: .*\n?/, '')
 
-    expect(parseRepoPolicy(noGate)).toEqual(validRepoPolicy)
+    expect(parseRepoPolicy(noGate)).toEqual({ ...validRepoPolicy, plan_gate: true })
   })
 
   it('throws ConfigError on invalid YAML syntax', () => {

@@ -1,4 +1,4 @@
-name: security
+name: ci
 
 on:
   pull_request:
@@ -9,6 +9,22 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Version comes from the packageManager field in package.json, so local
+      # dev and CI cannot drift apart.
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+
   gitleaks:
     runs-on: ubuntu-latest
     steps:
