@@ -241,5 +241,6 @@ Still open:
     collaborator check) + C3 run registry (label state machine + run-marker
     comments)
   - [x] PR 5 (#17): C5 agent driver + C6 role prompts
-  - [ ] PR 6: C7 tier classifier + C15 notifier
+  - [x] PR 6 (#19): C7 tier classifier (`src/components/tier/`) + C15 notifier
+    (`src/components/notifier/`)
   - [ ] PR 7: tick entrypoint (triage → plan comment → label)

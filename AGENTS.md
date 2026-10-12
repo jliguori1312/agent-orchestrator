@@ -38,7 +38,8 @@ which carries a dated status snapshot.
     (`src/components/registry/`)
   - [x] PR 5 (#17): C5 agent driver (`pi --print` adapter,
     `src/components/agent/`) + C6 role prompts (`src/prompts/`)
-  - [ ] PR 6: C7 tier classifier + C15 notifier
+  - [x] PR 6 (#19): C7 tier classifier (`src/components/tier/`) + C15 notifier
+    (`src/components/notifier/`)
   - [ ] PR 7: tick entrypoint — triage session → plan comment → label
 - **Working rhythm:** TDD per slice (tests drafted and reviewed first, then
   implemented to green); gates must be green on every PR
@@ -51,7 +52,7 @@ which carries a dated status snapshot.
 
 | Path | Purpose |
 |---|---|
-| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), C2 App auth + `gh` adapter (`github/`), C3 run registry (`registry/`), and C5 agent driver (`agent/`) exist so far |
+| `src/components/` | C1–C16 components; C1 config loader (`config/`), C14 journal (`journal/`), C2 App auth + `gh` adapter (`github/`), C3 run registry (`registry/`), C5 agent driver (`agent/`), C7 tier classifier (`tier/`), and C15 notifier (`notifier/`) exist so far |
 | `src/shared/` | Cross-component primitives: zod strict-object/field constraints + the systemd credential reader (`readCredential`) |
 | `src/prompts/` | C6 role system prompts + S4 tool allowlists (`triage`, `plan`, `implement`, `review`) |
 | `test/` | Unit tests with mocked `gh` / `pi` / `git` / filesystem |
