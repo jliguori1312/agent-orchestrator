@@ -56,7 +56,11 @@ tracked in [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/
 - **M0 — Substrate + host:** provision the LXC; create + install the GitHub App.
   *(done)*
 - **M1 — Read-only triage + plan gate:** config loader, GitHub adapter, run
-  registry, journal, triage/plan prompts.
+  registry, journal, triage/plan prompts. *(in progress — C1 config loader and
+  C14 journal landed in [#12](https://github.com/jliguori1312/agent-orchestrator/pull/12)
+  and [#13](https://github.com/jliguori1312/agent-orchestrator/pull/13); the
+  GitHub adapter, run registry, role prompts, and the tick remain — see
+  [AGENTS.md](AGENTS.md) for the PR-by-PR slice list)*
 - **M2 — Plan-gated PRs (Tiers 0–3):** worktree manager, implement session,
   guardrails, verifier, dossier, draft PR, human merge.
 - **M3 — Adversarial review + metrics.**
@@ -70,12 +74,12 @@ tracked in [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/
 
 ## Quick start
 
-The code scaffold lands in M1. Until then:
-
 ```bash
-pnpm install      # once the M1 dependencies land
+pnpm install
 cp orchestrator.example.jsonc orchestrator.jsonc
 # edit orchestrator.jsonc; secrets are systemd credentials on the host
+
+pnpm typecheck && pnpm lint && pnpm test   # the gates every PR must keep green
 ```
 
 The real `orchestrator.jsonc` is gitignored; secrets (the GitHub App private
