@@ -55,4 +55,11 @@ describe('role prompts', () => {
     // The phrase may wrap across a line in the prompt, so match on whitespace.
     expect(reviewRole.systemPrompt).toMatch(/questions,\s+not\s+verdicts/i)
   })
+
+  it('anchors the tier marker C7 extracts', () => {
+    // Triage is the only role that classifies; the marker literal must appear
+    // or the machine has no tier to gate on.
+    expect(triageRole.systemPrompt).toMatch(/agent:tier=/)
+    expect(planRole.systemPrompt).not.toMatch(/agent:tier=/)
+  })
 })
