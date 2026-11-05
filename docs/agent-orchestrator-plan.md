@@ -9,9 +9,11 @@
 > Decisions: [ADR-0001](./adr/0001-build-thin-orchestrator-on-pi.md) (build a
 > thin orchestrator on Pi; reject Orbi as a dependency),
 > [ADR-0002](./adr/0002-orchestrator-runtime-decisions.md) (runtime decisions
-> D1–D4, D6), and [ADR-0003](./adr/0003-orchestrator-authenticates-as-github-app.md)
-> (GitHub App identity + notifications). The pipeline framework (principles,
-> tiers, gates) is [docs/agent-assisted-development-pipeline.md](./agent-assisted-development-pipeline.md);
+> D1–D4, D6), [ADR-0003](./adr/0003-orchestrator-authenticates-as-github-app.md)
+> (GitHub App identity + notifications), and
+> [ADR-0006](./adr/0006-reject-dsh-superagent-keep-read-only-reference.md)
+> (reject `dsh-superagent`; read-only reference, as with Orbi). The pipeline
+> framework (principles, tiers, gates) is [docs/agent-assisted-development-pipeline.md](./agent-assisted-development-pipeline.md);
 > the first target repo's instantiation is
 > [pottery-studio-system issue #518](https://github.com/jliguori1312/pottery-studio-system/issues/518).
 > Verification entry point (per target repo): `scripts/agent/verify.sh`.
