@@ -105,6 +105,6 @@ pnpm test        # vitest
 - Build tracker: [issue #1](https://github.com/jliguori1312/agent-orchestrator/issues/1)
 - [ADR log](docs/adr/) — thin orchestrator (0001), runtime decisions (0002),
   GitHub App identity (0003), hardened system unit (0004), run identity +
-  journal format (0005).
+  journal format (0005), reject `dsh-superagent` (0006).
 - First target repo policy:
   [pottery-studio-system #518](https://github.com/jliguori1312/pottery-studio-system/issues/518).

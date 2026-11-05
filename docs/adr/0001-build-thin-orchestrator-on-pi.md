@@ -13,7 +13,9 @@
   target repo ([pottery-studio-system ADR-0001](https://github.com/jliguori1312/pottery-studio-system/blob/main/docs/adr/0001-adopt-agent-assisted-pipeline.md));
   pipeline principles, autonomy tiers, and non-goals stay in force
 - **See also:** [pottery-studio-system issue #518](https://github.com/jliguori1312/pottery-studio-system/issues/518)
-  (first target repo's policy), [the orchestrator build plan](../agent-orchestrator-plan.md)
+  (first target repo's policy), [the orchestrator build plan](../agent-orchestrator-plan.md),
+  [ADR-0006](./0006-reject-dsh-superagent-keep-read-only-reference.md) (reaffirms
+  this decision for `dsh-superagent`)
 
 ## Context
 
